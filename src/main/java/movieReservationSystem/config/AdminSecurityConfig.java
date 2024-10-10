@@ -25,11 +25,12 @@ public class AdminSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/admin/registration").permitAll() // Allow public access to registration
+                        .requestMatchers("/admin/registration").permitAll()// Allow public access to registration
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated() // Require authentication for other requests
                 )
                 .formLogin(withDefaults())// Use default login configuration
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/admin/registration"));
+                .csrf(csrf -> csrf.disable());
         return http.build();
     }
 }
