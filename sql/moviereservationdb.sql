@@ -31,7 +31,7 @@ CREATE TABLE movies (
     id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(100) NOT NULL,
     description TEXT,
-    show_time TIMESTAMP NOT NULL,  
+    show_time TIMESTAMP NOT NULL,
     genre VARCHAR(50) NOT NULL,
     capacity INT NOT NULL,
     available_seats INT NOT NULL
