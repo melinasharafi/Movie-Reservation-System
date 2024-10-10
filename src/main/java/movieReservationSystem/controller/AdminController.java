@@ -1,6 +1,9 @@
 package movieReservationSystem.controller;
 
 import movieReservationSystem.dto.AdminDTO;
+import movieReservationSystem.service.AdminService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -14,9 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
 
     private final JdbcUserDetailsManager userDetailsManager;
+    private final AdminService adminService;
 
-    public AdminController(JdbcUserDetailsManager userDetailsManager) {
+    @Autowired
+    public AdminController(JdbcUserDetailsManager userDetailsManager, AdminService adminService) {
         this.userDetailsManager = userDetailsManager;
+        this.adminService = adminService;
     }
 
     @PostMapping("/registration")
@@ -34,7 +40,9 @@ public class AdminController {
 
         userDetailsManager.createUser(newAdmin);
 
-        return adminDTO.getUserName() + " successfully registered";
+        SecurityContextHolder.getContext().setAuthentication(null);
+        adminService.addNewAdmin(adminDTO.getUserName(), adminDTO.getEmail());
 
+        return adminDTO.getUserName() + " successfully registered";
     }
 }

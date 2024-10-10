@@ -29,7 +29,7 @@ public class AdminSecurityConfig {
                         .anyRequest().authenticated() // Require authentication for other requests
                 )
                 .formLogin(withDefaults())// Use default login configuration
-                .csrf(csrf -> csrf.disable());
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/admin/registration"));
         return http.build();
     }
 }
