@@ -90,11 +90,15 @@ public class AdminService {
     // delete a movie
     public String deleteMovie(int id) {
 
-        String title = movieDAO.findById(id).getTitle();
+        if (movieDAO.findById(id) == null) {
+            return "Movie not found";
+        } else {
+            String title = movieDAO.findById(id).getTitle();
 
-        movieDAO.deleteById(id);
+            movieDAO.deleteById(id);
 
-        return title + " deleted successfully";
+            return title + " deleted successfully";
+        }
     }
 
 
