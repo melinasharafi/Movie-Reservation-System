@@ -2,6 +2,7 @@ package movieReservationSystem.controller;
 
 import movieReservationSystem.dto.AdminDTO;
 import movieReservationSystem.dto.MovieDTO;
+import movieReservationSystem.model.Movie;
 import movieReservationSystem.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,6 +10,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -58,8 +61,13 @@ public class AdminController {
 
     @DeleteMapping("/movie/{movieId}")
     public String deleteMovie(@PathVariable int movieId) {
-        
+
         return adminService.deleteMovie(movieId);
+    }
+
+    @GetMapping("/movie")
+    public List<Movie> listOfAllMovie() {
+        return adminService.listOfAllMovie();
     }
 
 
