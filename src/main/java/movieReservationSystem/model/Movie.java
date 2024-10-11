@@ -25,10 +25,10 @@ public class Movie {
     private String genre;
 
     @Column(name = "capacity", nullable = false)
-    private int capacity;
+    private Integer capacity;
 
     @Column(name = "available_seats", nullable = false)
-    private int availableSeats;
+    private Integer availableSeats;
 
     // Getters and Setters
     // Constructors (default and parameterized)
@@ -85,19 +85,19 @@ public class Movie {
         this.genre = genre;
     }
 
-    public int getCapacity() {
+    public Integer getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
+    public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
 
-    public int getAvailableSeats() {
+    public Integer getAvailableSeats() {
         return availableSeats;
     }
 
-    public void setAvailableSeats(int availableSeats) {
+    public void setAvailableSeats(Integer availableSeats) {
         this.availableSeats = availableSeats;
     }
 

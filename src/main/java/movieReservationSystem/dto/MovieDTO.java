@@ -8,8 +8,8 @@ public class MovieDTO {
     private String description;
     private Timestamp showTime;
     private String genre;
-    private int capacity;
-    private int availableSeats;
+    private Integer capacity;
+    private Integer availableSeats;
 
     public String getTitle() {
         return title;
@@ -43,19 +43,19 @@ public class MovieDTO {
         this.genre = genre;
     }
 
-    public int getCapacity() {
+    public Integer getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
+    public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
 
-    public int getAvailableSeats() {
+    public Integer getAvailableSeats() {
         return availableSeats;
     }
 
-    public void setAvailableSeats(int availableSeats) {
+    public void setAvailableSeats(Integer availableSeats) {
         this.availableSeats = availableSeats;
     }
 }

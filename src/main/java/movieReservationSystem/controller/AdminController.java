@@ -52,8 +52,11 @@ public class AdminController {
         return movieDTO.getTitle() + " added successfully";
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "testing";
+    @PutMapping("/updateMovie/{movieId}")
+    public String updateMovie(@PathVariable int movieId, @RequestBody MovieDTO newMovie) {
+
+        return adminService.editMovie(movieId, newMovie);
     }
+
+
 }
