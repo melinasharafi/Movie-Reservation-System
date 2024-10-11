@@ -84,4 +84,15 @@ public class AdminService {
         }
 
     }
+
+
+    // delete a movie
+    public String deleteMovie(int id) {
+
+        String title = movieDAO.findById(id).getTitle();
+
+        movieDAO.deleteById(id);
+
+        return title + " deleted successfully";
+    }
 }

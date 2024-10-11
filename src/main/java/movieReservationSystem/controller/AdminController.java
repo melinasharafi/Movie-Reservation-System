@@ -44,16 +44,22 @@ public class AdminController {
         return adminDTO.getUserName() + " successfully registered";
     }
 
-    @PostMapping("/addNewMovie")
+    @PostMapping("/movie")
     public String addNewMovie(@RequestBody MovieDTO newMovie) {
 
         return adminService.addNewMovie(newMovie);
     }
 
-    @PutMapping("/updateMovie/{movieId}")
+    @PutMapping("/movie/{movieId}")
     public String updateMovie(@PathVariable int movieId, @RequestBody MovieDTO updatedMovie) {
 
         return adminService.editMovie(movieId, updatedMovie);
+    }
+
+    @DeleteMapping("/movie/{movieId}")
+    public String deleteMovie(@PathVariable int movieId) {
+        
+        return adminService.deleteMovie(movieId);
     }
 
 
