@@ -70,5 +70,11 @@ public class AdminController {
         return adminService.listOfAllMovie();
     }
 
+    @GetMapping("/movie/{movieId}")
+    public Movie getMovie(@PathVariable int movieId) {
+
+        return adminService.getMovie(movieId);
+    }
+
 
 }

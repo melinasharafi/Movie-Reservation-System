@@ -97,7 +97,28 @@ public class AdminService {
         return title + " deleted successfully";
     }
 
+
+    // return list of all movies
     public List<Movie> listOfAllMovie() {
-        return  movieDAO.findAll();
+
+        List<Movie> movies = movieDAO.findAll();
+
+        if (movies.isEmpty()) {
+            throw new RuntimeException("No movie found");
+        } else {
+            return movieDAO.findAll();
+        }
+    }
+
+    // return a single movie
+    public Movie getMovie(int movieId) {
+
+        Movie movie = movieDAO.findById(movieId);
+
+        if (movie == null) {
+            throw new RuntimeException("Movie not found");
+        } else {
+            return movieDAO.findById(movieId);
+        }
     }
 }
