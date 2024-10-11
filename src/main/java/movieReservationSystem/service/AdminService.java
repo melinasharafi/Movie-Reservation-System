@@ -34,12 +34,14 @@ public class AdminService {
 
 
     // create new movie
-    public void addNewMovie(String title, String description, Timestamp data, String genre,
-                            int capacity, int availableSeats) {
+    public String addNewMovie(MovieDTO newMovie) {
 
-        Movie movie = new Movie(title, description, data, genre, capacity, availableSeats);
+        Movie movie = new Movie(newMovie.getTitle(), newMovie.getDescription(), newMovie.getShowTime()
+                , newMovie.getGenre(), newMovie.getCapacity(), newMovie.getAvailableSeats());
 
         movieDAO.save(movie);
+
+        return movie.getTitle() + " added successfully";
     }
 
 

@@ -45,17 +45,15 @@ public class AdminController {
     }
 
     @PostMapping("/addNewMovie")
-    public String addNewMovie(@RequestBody MovieDTO movieDTO) {
-        adminService.addNewMovie(movieDTO.getTitle(), movieDTO.getDescription(),
-                movieDTO.getShowTime(), movieDTO.getGenre(), movieDTO.getCapacity(), movieDTO.getAvailableSeats());
+    public String addNewMovie(@RequestBody MovieDTO newMovie) {
 
-        return movieDTO.getTitle() + " added successfully";
+        return adminService.addNewMovie(newMovie);
     }
 
     @PutMapping("/updateMovie/{movieId}")
-    public String updateMovie(@PathVariable int movieId, @RequestBody MovieDTO newMovie) {
+    public String updateMovie(@PathVariable int movieId, @RequestBody MovieDTO updatedMovie) {
 
-        return adminService.editMovie(movieId, newMovie);
+        return adminService.editMovie(movieId, updatedMovie);
     }
 
 
