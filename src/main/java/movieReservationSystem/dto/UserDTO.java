@@ -1,6 +1,6 @@
 package movieReservationSystem.dto;
 
-public class AdminDTO {
+public class UserDTO {
 
     private String userName;
     private String password;

@@ -1,6 +1,6 @@
 package movieReservationSystem.controller;
 
-import movieReservationSystem.dto.AdminDTO;
+import movieReservationSystem.dto.UserDTO;
 import movieReservationSystem.dto.MovieDTO;
 import movieReservationSystem.model.Movie;
 import movieReservationSystem.service.AdminService;
@@ -27,7 +27,7 @@ public class AdminController {
     }
 
     @PostMapping("/registration")
-    public String register(@RequestBody AdminDTO adminDTO) {
+    public String register(@RequestBody UserDTO adminDTO) {
 
         if (userDetailsManager.userExists(adminDTO.getUserName())) {
             return adminDTO.getUserName() + " already exist";
