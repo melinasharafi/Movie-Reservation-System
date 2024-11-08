@@ -2,6 +2,8 @@ package movieReservationSystem.model;
 
 import jakarta.persistence.*;
 
+import java.util.Optional;
+
 @Entity
 @Table(name = "reservation")
 public class Reservation {
@@ -13,21 +15,20 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private UserInformation user;
+    private int userId;
 
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
-    private Movie movie;
+    private int movieId;
 
     @Column(name = "seat_number", nullable = false)
     private int seatNumber;
 
     // Getters and Setters
     // Constructors (default and parameterized)
-
-    public Reservation(UserInformation user, Movie movie, int seatNumber) {
-        this.user = user;
-        this.movie = movie;
+    public Reservation(int userId, int movieId, int seatNumber) {
+        this.userId = userId;
+        this.movieId = movieId;
         this.seatNumber = seatNumber;
     }
 
@@ -42,20 +43,20 @@ public class Reservation {
         this.id = id;
     }
 
-    public UserInformation getUser() {
-        return user;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser(UserInformation user) {
-        this.user = user;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public Movie getMovie() {
-        return movie;
+    public int getMovieId() {
+        return movieId;
     }
 
-    public void setMovie(Movie movie) {
-        this.movie = movie;
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
     }
 
     public int getSeatNumber() {
@@ -70,8 +71,8 @@ public class Reservation {
     public String toString() {
         return "Reservation{" +
                 "id=" + id +
-                ", user=" + user +
-                ", movie=" + movie +
+                ", userId=" + userId +
+                ", movieId=" + movieId +
                 ", seatNumber=" + seatNumber +
                 '}';
     }
