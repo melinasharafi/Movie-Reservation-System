@@ -1,5 +1,6 @@
 package movieReservationSystem.controller;
 
+import movieReservationSystem.dto.ReservationDTO;
 import movieReservationSystem.dto.UserDTO;
 import movieReservationSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,10 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController()
 @RequestMapping("/user")
@@ -44,5 +42,11 @@ public class UserController {
         userService.addNewUser(userDTO.getUserName(), userDTO.getEmail());
 
         return userDTO.getUserName() + " successfully registered";
+    }
+
+    @PostMapping("/reservation/{userId}")
+    public String reserveMovie(@PathVariable int userId, @RequestBody ReservationDTO reservationInfo) {
+
+        return userService.reserveMovie(userId, reservationInfo);
     }
 }

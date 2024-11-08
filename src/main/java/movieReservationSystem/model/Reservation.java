@@ -1,8 +1,10 @@
 package movieReservationSystem.model;
 
 import jakarta.persistence.*;
+import movieReservationSystem.model.Movie;
+import movieReservationSystem.model.UserInformation;
 
-import java.util.Optional;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "reservation")
@@ -10,71 +12,55 @@ public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+    private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private int userId;
+    private UserInformation user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "movie_id", nullable = false)
-    private int movieId;
+    private Movie movie;
 
     @Column(name = "seat_number", nullable = false)
-    private int seatNumber;
+    private Integer seatNumber;
 
-    // Getters and Setters
-    // Constructors (default and parameterized)
-    public Reservation(int userId, int movieId, int seatNumber) {
-        this.userId = userId;
-        this.movieId = movieId;
+    public Reservation(UserInformation user, Movie movie, Integer seatNumber) {
+        this.user = user;
+        this.movie = movie;
         this.seatNumber = seatNumber;
     }
 
-    public Reservation() {
-    }
-
-    public int getId() {
+    // Getters and setters
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public UserInformation getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(UserInformation user) {
+        this.user = user;
     }
 
-    public int getMovieId() {
-        return movieId;
+    public Movie getMovie() {
+        return movie;
     }
 
-    public void setMovieId(int movieId) {
-        this.movieId = movieId;
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 
-    public int getSeatNumber() {
+    public Integer getSeatNumber() {
         return seatNumber;
     }
 
-    public void setSeatNumber(int seatNumber) {
+    public void setSeatNumber(Integer seatNumber) {
         this.seatNumber = seatNumber;
     }
-
-    @Override
-    public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", movieId=" + movieId +
-                ", seatNumber=" + seatNumber +
-                '}';
-    }
 }
-
