@@ -5,6 +5,7 @@ import movieReservationSystem.dto.MovieDTO;
 import movieReservationSystem.model.Movie;
 import movieReservationSystem.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +27,7 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @PostMapping("/registration")
+    @PostMapping("/register")
     public String register(@RequestBody UserDTO adminDTO) {
 
         if (userDetailsManager.userExists(adminDTO.getUserName())) {

@@ -6,6 +6,7 @@ import movieReservationSystem.model.Movie;
 import movieReservationSystem.model.Reservation;
 import movieReservationSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.User;
