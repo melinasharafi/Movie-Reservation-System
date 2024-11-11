@@ -31,6 +31,9 @@ public class Reservation {
         this.seatNumber = seatNumber;
     }
 
+    public Reservation() {
+    }
+
     // Getters and setters
     public Integer getId() {
         return id;

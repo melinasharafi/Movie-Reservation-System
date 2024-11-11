@@ -10,6 +10,7 @@ import movieReservationSystem.repository.UserInformationDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,7 +45,7 @@ public class UserService {
 
         // check for movie's capacity
         if (movie.getAvailableSeats() == 0) {
-            return "The capacity of "+  reservationInfo.getMovieName() + " has been completed";
+            return "The capacity of " + reservationInfo.getMovieName() + " has been completed";
         }
 
         int seatNumber = movie.getCapacity() - movie.getAvailableSeats() + 1;
@@ -56,5 +57,29 @@ public class UserService {
         reservationDAO.save(reservation);
 
         return "Your reservationInfo for " + reservationInfo.getMovieName() + " was successfully";
+    }
+
+
+    // cancel a reservation
+    public String cancelReservation(int userId, ReservationDTO reservation) {
+
+        UserInformation user = userDao.findById(userId);
+        if (user == null) {
+            return "No user found by id = " + userId;
+        }
+
+        Movie movie = movieDAO.findByTitle(reservation.getMovieName());
+        if (movie == null) {
+            return reservation.getMovieName() + " not found";
+        }
+
+        Reservation reservationToCancel = reservationDAO.findByUserIdAndMovieId(user.getId(), movie.getId());
+        if (reservationToCancel == null) {
+            return "No reservation for " + movie.getTitle() + " by " + user.getUsername();
+        }
+
+        reservationDAO.delete(reservationToCancel);
+        return "Reservation deleted successfully";
+
     }
 }

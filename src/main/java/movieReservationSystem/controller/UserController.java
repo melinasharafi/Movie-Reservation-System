@@ -49,4 +49,9 @@ public class UserController {
 
         return userService.reserveMovie(userId, reservationInfo);
     }
+
+    @DeleteMapping("/{userId}/reservation/cancel")
+    public String cancelReservation(@PathVariable int userId, @RequestBody ReservationDTO reservation) {
+        return userService.cancelReservation(userId, reservation);
+    }
 }
