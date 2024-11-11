@@ -9,9 +9,12 @@ import movieReservationSystem.repository.ReservationDAO;
 import movieReservationSystem.repository.UserInformationDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Stack;
 
 @Service
 public class UserService {
@@ -81,5 +84,23 @@ public class UserService {
         reservationDAO.delete(reservationToCancel);
         return "Reservation deleted successfully";
 
+    }
+
+    // user can see their reservation
+    @Transactional
+    public List<Movie> userReservations(int userId) {
+
+        List<Movie> movies = new ArrayList<>();
+
+        List<Reservation> reservations = reservationDAO.findAllByUserId(userId);
+
+        if (reservations != null && !reservations.isEmpty()) {
+            for (Reservation reservation : reservations) {
+                movies.add(reservation.getMovie());
+            }
+        }
+
+
+        return movies;
     }
 }
