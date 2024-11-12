@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +23,16 @@ public class UserController {
 
     private final JdbcUserDetailsManager userDetailsManager;
     private final UserService userService;
+    private final BCryptPasswordEncoder encoder;
 
     @Autowired
-    public UserController(JdbcUserDetailsManager userDetailsManager, UserService userService) {
+    public UserController(JdbcUserDetailsManager userDetailsManager, UserService userService,
+                          BCryptPasswordEncoder encoder) {
         this.userDetailsManager = userDetailsManager;
         this.userService = userService;
+        this.encoder = encoder;
     }
+
 
     @PostMapping("/register")
     public String register(@RequestBody UserDTO userDTO) {
@@ -38,7 +43,7 @@ public class UserController {
 
         UserDetails newUser = User.builder()
                 .username(userDTO.getUserName())
-                .password("{noop}" + userDTO.getPassword())
+                .password(encoder.encode(userDTO.getPassword()))
                 .roles("USER")
                 .build();
 

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,11 +21,14 @@ public class AdminController {
 
     private final JdbcUserDetailsManager userDetailsManager;
     private final AdminService adminService;
+    private final BCryptPasswordEncoder encoder;
 
     @Autowired
-    public AdminController(JdbcUserDetailsManager userDetailsManager, AdminService adminService) {
+    public AdminController(JdbcUserDetailsManager userDetailsManager, AdminService adminService,
+                           BCryptPasswordEncoder encoder) {
         this.userDetailsManager = userDetailsManager;
         this.adminService = adminService;
+        this.encoder = encoder;
     }
 
     @PostMapping("/register")
@@ -36,7 +40,7 @@ public class AdminController {
 
         UserDetails newAdmin = User.builder()
                 .username(adminDTO.getUserName())
-                .password("{noop}" + adminDTO.getPassword())
+                .password(encoder.encode(adminDTO.getPassword()))
                 .roles("ADMIN")
                 .build();
 
