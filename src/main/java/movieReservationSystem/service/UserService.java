@@ -82,6 +82,11 @@ public class UserService {
         }
 
         reservationDAO.delete(reservationToCancel);
+
+        // increase movie capacity by 1
+        movie.setAvailableSeats(movie.getAvailableSeats() + 1);
+        movieDAO.save(movie);
+
         return "Reservation deleted successfully";
 
     }
