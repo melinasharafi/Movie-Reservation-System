@@ -26,6 +26,8 @@ public class AdminService {
         this.movieDAO = movieDAO;
     }
 
+    public AdminService() {
+    }
 
     // create new admin
     public void addNewAdmin(String username, String email) {

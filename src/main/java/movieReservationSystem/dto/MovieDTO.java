@@ -11,6 +11,15 @@ public class MovieDTO {
     private Integer capacity;
     private Integer availableSeats;
 
+    public MovieDTO(String title, String description, Timestamp showTime, String genre, Integer capacity, Integer availableSeats) {
+        this.title = title;
+        this.description = description;
+        this.showTime = showTime;
+        this.genre = genre;
+        this.capacity = capacity;
+        this.availableSeats = availableSeats;
+    }
+
     public String getTitle() {
         return title;
     }
