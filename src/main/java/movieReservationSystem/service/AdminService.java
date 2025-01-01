@@ -36,16 +36,37 @@ public class AdminService {
     }
 
 
+    public class MovieValidator {
+
+        public static void validate(MovieDTO newMovie) {
+            if (newMovie.getTitle() == null) {
+                throw new IllegalArgumentException("Movie title can not be null");
+            }
+            if (newMovie.getShowTime() == null) {
+                throw new IllegalArgumentException("Show time can not be null");
+            }
+            if (newMovie.getAvailableSeats() > newMovie.getCapacity()) {
+                throw new IllegalArgumentException("AvailableSeats must be less than capacity");
+            }
+        }
+    }
+
     // create new movie
     public String addNewMovie(MovieDTO newMovie) {
+        MovieValidator.validate(newMovie);
 
-        Movie movie = new Movie(newMovie.getTitle(), newMovie.getDescription(), newMovie.getShowTime()
-                , newMovie.getGenre(), newMovie.getCapacity(), newMovie.getAvailableSeats());
+        if (movieDAO.findByTitle(newMovie.getTitle()) != null) {
+            return newMovie.getTitle() + " already exists";
+        }
+
+        Movie movie = new Movie(newMovie.getTitle(), newMovie.getDescription(), newMovie.getShowTime(),
+                newMovie.getGenre(), newMovie.getCapacity(), newMovie.getAvailableSeats());
 
         movieDAO.save(movie);
 
         return movie.getTitle() + " added successfully";
     }
+
 
 
     // edit a movie
