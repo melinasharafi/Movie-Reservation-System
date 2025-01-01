@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 
+import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -50,14 +51,31 @@ public class AdminServiceTest {
     @Test
     public void addNewMovieTest() {
 
-        when(movieDAO.findByTitle("Inception")).thenReturn(null);
+        // Mock behavior for the DAO
+        when(movieDAO.findByTitle("Inception")).thenReturn(null); // Simulate movie not existing
         assertEquals("Inception added successfully", adminService.addNewMovie(firstMovieDTO));
 
-        when(movieDAO.findByTitle("Inception")).thenReturn(new Movie());
+        when(movieDAO.findByTitle("Inception")).thenReturn(new Movie()); // Simulate movie already existing
         assertEquals("Inception already exists", adminService.addNewMovie(firstMovieDTO));
 
-        assertEquals("Movie title can not be null", adminService.addNewMovie(secondMovieDTO));
-        assertEquals("Show time can not be null", adminService.addNewMovie(thirdMovieDTO));
-        assertEquals("AvailableSeats must be less than capacity", adminService.addNewMovie(forthMovieDTO));
+        // Test validation errors
+        try {
+            adminService.addNewMovie(secondMovieDTO); // Title is null
+        } catch (IllegalArgumentException ex) {
+            assertEquals("Movie title can not be null", ex.getMessage());
+        }
+
+        try {
+            adminService.addNewMovie(thirdMovieDTO); // Show time is null
+        } catch (IllegalArgumentException ex) {
+            assertEquals("Show time can not be null", ex.getMessage());
+        }
+
+        try {
+            adminService.addNewMovie(forthMovieDTO); // AvailableSeats > Capacity
+        } catch (IllegalArgumentException ex) {
+            assertEquals("AvailableSeats must be less than capacity", ex.getMessage());
+        }
     }
+
 }
