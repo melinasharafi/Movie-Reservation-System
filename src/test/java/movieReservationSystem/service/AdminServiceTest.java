@@ -1,6 +1,7 @@
 package movieReservationSystem.service;
 
 import movieReservationSystem.dto.MovieDTO;
+import movieReservationSystem.model.Movie;
 import movieReservationSystem.repository.MovieDAO;
 import movieReservationSystem.repository.UserInformationDAO;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class AdminServiceTest {
 
@@ -48,8 +50,12 @@ public class AdminServiceTest {
     @Test
     public void addNewMovieTest() {
 
+        when(movieDAO.findByTitle("Inception")).thenReturn(null);
         assertEquals("Inception added successfully", adminService.addNewMovie(firstMovieDTO));
+
+        when(movieDAO.findByTitle("Inception")).thenReturn(new Movie());
         assertEquals("Inception already exists", adminService.addNewMovie(firstMovieDTO));
+
         assertEquals("Movie title can not be null", adminService.addNewMovie(secondMovieDTO));
         assertEquals("Show time can not be null", adminService.addNewMovie(thirdMovieDTO));
         assertEquals("AvailableSeats must be less than capacity", adminService.addNewMovie(forthMovieDTO));
