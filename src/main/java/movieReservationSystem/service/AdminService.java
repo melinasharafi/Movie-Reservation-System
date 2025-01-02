@@ -68,44 +68,52 @@ public class AdminService {
     }
 
 
-
     // edit a movie
     public String editMovie(int id, MovieDTO updatedMovie) {
 
-        Movie existingMovie = movieDAO.findById(id);
-
-        if (existingMovie == null) {
-            return "Movie by id " + id + " not found";
-        } else {
-
-            if (updatedMovie.getTitle() != null) {
-                existingMovie.setTitle(updatedMovie.getTitle());
-            }
-
-            if (updatedMovie.getDescription() != null) {
-                existingMovie.setDescription(updatedMovie.getDescription());
-            }
-
-            if (updatedMovie.getGenre() != null) {
-                existingMovie.setGenre(updatedMovie.getGenre());
-            }
-
-            if (updatedMovie.getShowTime() != null) {
-                existingMovie.setShowTime(updatedMovie.getShowTime());
-            }
-
-            if (updatedMovie.getCapacity() != null) {
-                existingMovie.setCapacity(updatedMovie.getCapacity());
-            }
-
-            if (updatedMovie.getAvailableSeats() != null) {
-                existingMovie.setAvailableSeats(updatedMovie.getAvailableSeats());
-            }
-
-            movieDAO.save(existingMovie);
-
-            return existingMovie.getTitle() + " updated successfully";
+        if (id <= 0) {
+            throw new IllegalArgumentException("Id must be greater than 1");
         }
+
+        if (updatedMovie == null) {
+            throw new IllegalArgumentException("Updating movie can't be null");
+        }
+
+
+        Movie existingMovie = movieDAO.findById(id);
+        if (existingMovie == null) {
+            throw new IllegalArgumentException("Movie by id " + id + " not found");
+        }
+
+
+        if (updatedMovie.getTitle() != null) {
+            existingMovie.setTitle(updatedMovie.getTitle());
+        }
+
+        if (updatedMovie.getDescription() != null) {
+            existingMovie.setDescription(updatedMovie.getDescription());
+        }
+
+        if (updatedMovie.getGenre() != null) {
+            existingMovie.setGenre(updatedMovie.getGenre());
+        }
+
+        if (updatedMovie.getShowTime() != null) {
+            existingMovie.setShowTime(updatedMovie.getShowTime());
+        }
+
+        if (updatedMovie.getCapacity() != null) {
+            existingMovie.setCapacity(updatedMovie.getCapacity());
+        }
+
+        if (updatedMovie.getAvailableSeats() != null) {
+            existingMovie.setAvailableSeats(updatedMovie.getAvailableSeats());
+        }
+
+        movieDAO.save(existingMovie);
+
+        return existingMovie.getTitle() + " updated successfully";
+
 
     }
 
