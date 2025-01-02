@@ -93,7 +93,7 @@ public class AdminServiceTest {
         try {
             adminService.editMovie(2, null);
         } catch (IllegalArgumentException e) {
-            assertEquals("Id must be greater than 1", e.getMessage());
+            assertEquals("Updating movie can't be null", e.getMessage());
         }
 
         when(movieDAO.findById(2)).thenReturn(null);
@@ -104,7 +104,7 @@ public class AdminServiceTest {
         }
 
         when(movieDAO.findById(2)).thenReturn(new Movie());
-        assertEquals(secondMovieDTO.getTitle() + "updated successfully",
+        assertEquals(secondMovieDTO.getTitle() + " updated successfully",
                 adminService.editMovie(2, secondMovieDTO));
 
 
