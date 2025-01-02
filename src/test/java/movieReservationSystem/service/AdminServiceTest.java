@@ -6,13 +6,9 @@ import movieReservationSystem.repository.MovieDAO;
 import movieReservationSystem.repository.UserInformationDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.sql.Timestamp;
-
-import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class AdminServiceTest {
 
@@ -76,6 +72,42 @@ public class AdminServiceTest {
         } catch (IllegalArgumentException ex) {
             assertEquals("AvailableSeats must be less than capacity", ex.getMessage());
         }
+    }
+
+
+    @Test
+    public void editMovieTest() {
+
+        try {
+            adminService.editMovie(-1, secondMovieDTO);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Id must be greater than 1", e.getMessage());
+        }
+
+        try {
+            adminService.editMovie(0, secondMovieDTO);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Id must be greater than 1", e.getMessage());
+        }
+
+        try {
+            adminService.editMovie(2, null);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Id must be greater than 1", e.getMessage());
+        }
+
+        when(movieDAO.findById(2)).thenReturn(null);
+        try {
+            adminService.editMovie(2, secondMovieDTO);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Movie by id 2 not found", e.getMessage());
+        }
+
+        when(movieDAO.findById(2)).thenReturn(new Movie());
+        assertEquals(secondMovieDTO.getTitle() + "updated successfully",
+                adminService.editMovie(2, secondMovieDTO));
+
+
     }
 
 }
