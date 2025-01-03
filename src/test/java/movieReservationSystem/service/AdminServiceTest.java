@@ -6,7 +6,9 @@ import movieReservationSystem.repository.MovieDAO;
 import movieReservationSystem.repository.UserInformationDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.sql.Timestamp;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -109,5 +111,38 @@ public class AdminServiceTest {
 
 
     }
+
+    @Test
+    public void deleteMovieTest() {
+
+        // Test for invalid id
+        try {
+            adminService.deleteMovie(-1);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Id must be greater than 1", e.getMessage());
+        }
+
+        try {
+            adminService.deleteMovie(0);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Id must be greater than 1", e.getMessage());
+        }
+
+        // Test for deleting not existing
+        when(movieDAO.findById(2)).thenReturn(null);
+        try {
+            adminService.deleteMovie(2);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Movie not found", e.getMessage());
+        }
+
+        // Test Deleting successfully
+        Movie goingToBeDeleted = new Movie();
+        when(movieDAO.findById(2)).thenReturn(goingToBeDeleted);
+        assertEquals(goingToBeDeleted.getTitle() + " deleted successfully", adminService.deleteMovie(2));
+
+
+    }
+
 
 }
