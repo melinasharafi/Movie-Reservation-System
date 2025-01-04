@@ -144,5 +144,37 @@ public class AdminServiceTest {
 
     }
 
+    @Test
+    public void getMovieTest(){
+
+        // Test for invalid id
+        try {
+            adminService.getMovie(-1);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Id must be greater than 1", e.getMessage());
+        }
+
+        try {
+            adminService.getMovie(0);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Id must be greater than 1", e.getMessage());
+        }
+
+
+        // Test for not exiting movie
+        when(movieDAO.findById(2)).thenReturn(null);
+        try {
+            adminService.getMovie(2);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Movie not found", e.getMessage());
+        }
+
+
+        // Test returning movie successfully
+        Movie movie = new Movie();
+        when(movieDAO.findById(2)).thenReturn(movie);
+        assertEquals(movie, adminService.getMovie(2));
+    }
+
 
 }
