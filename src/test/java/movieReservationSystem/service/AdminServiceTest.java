@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -147,7 +148,7 @@ public class AdminServiceTest {
     }
 
     @Test
-    public void getMovieTest(){
+    public void getMovieTest() {
 
         // Test for invalid id
         try {
@@ -183,16 +184,18 @@ public class AdminServiceTest {
     public void listOfAllMovieTest() {
 
         // Test for no movie existing mode
-        when(movieDAO.findAll()).thenReturn(null);
+        when(movieDAO.findAll()).thenReturn(Collections.emptyList());
         try {
             adminService.listOfAllMovie();
-        } catch (IllegalArgumentException e) {
+        } catch (RuntimeException e) {
             assertEquals("No movie found", e.getMessage());
         }
 
 
         // Test for returning list of all movie successfully
         List<Movie> movies = new ArrayList<>();
+        movies.add(new Movie("Inception", "A mind-bending thriller",
+                Timestamp.valueOf("2025-01-01 12:34:56.789"), "Sci-Fi", 100, 100));
         when(movieDAO.findAll()).thenReturn(movies);
         assertEquals(movies, adminService.listOfAllMovie());
     }
