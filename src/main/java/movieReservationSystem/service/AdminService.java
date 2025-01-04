@@ -151,10 +151,10 @@ public class AdminService {
     // return a single movie
     public Movie getMovie(int movieId) {
 
-        Movie movie = movieDAO.findById(movieId);
-
-        if (movie == null) {
-            throw new RuntimeException("Movie not found");
+        if (movieId <= 0) {
+            throw new IllegalArgumentException("Id must be greater than 1");
+        } else if (movieDAO.findById(movieId) == null) {
+            throw new IllegalArgumentException("Movie not found");
         } else {
             return movieDAO.findById(movieId);
         }
