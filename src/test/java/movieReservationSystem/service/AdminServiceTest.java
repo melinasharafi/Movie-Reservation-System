@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -161,7 +163,7 @@ public class AdminServiceTest {
         }
 
 
-        // Test for not exiting movie
+        // Test for not existing movie
         when(movieDAO.findById(2)).thenReturn(null);
         try {
             adminService.getMovie(2);
@@ -174,6 +176,25 @@ public class AdminServiceTest {
         Movie movie = new Movie();
         when(movieDAO.findById(2)).thenReturn(movie);
         assertEquals(movie, adminService.getMovie(2));
+    }
+
+
+    @Test
+    public void listOfAllMovieTest() {
+
+        // Test for no movie existing mode
+        when(movieDAO.findAll()).thenReturn(null);
+        try {
+            adminService.listOfAllMovie();
+        } catch (IllegalArgumentException e) {
+            assertEquals("No movie found", e.getMessage());
+        }
+
+
+        // Test for returning list of all movie successfully
+        List<Movie> movies = new ArrayList<>();
+        when(movieDAO.findAll()).thenReturn(movies);
+        assertEquals(movies, adminService.listOfAllMovie());
     }
 
 
