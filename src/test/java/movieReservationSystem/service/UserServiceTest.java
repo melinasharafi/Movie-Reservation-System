@@ -9,6 +9,8 @@ import movieReservationSystem.repository.UserInformationDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -90,7 +92,7 @@ public class UserServiceTest {
         when(userDAO.findById(1)).thenReturn(new UserInformation());
         try {
             userService.reserveMovie(1, reservingMovie);
-        } catch (IllegalArgumentException e) {
+        } catch (NoSuchElementException e) {
             assertEquals(reservingMovie.getMovieName() + " doesn't exit", e.getMessage());
         }
 
@@ -108,6 +110,7 @@ public class UserServiceTest {
 
         // Test for successful approach
         when(movieDAO.findByTitle(reservingMovie.getMovieName())).thenReturn(movie);
+        movie.setCapacity(20);
         movie.setAvailableSeats(4);
         assertEquals("Your reservation was successful", userService.reserveMovie(1, reservingMovie));
     }

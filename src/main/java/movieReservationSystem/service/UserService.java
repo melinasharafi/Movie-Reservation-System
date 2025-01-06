@@ -14,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import java.security.cert.PolicyNode;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Stack;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -82,12 +79,13 @@ public class UserService {
 
         // check the movie exits or not
         if (movie == null) {
-            return reservationInfo.getMovieName() + " doesn't exit";
+            throw new NoSuchElementException(reservationInfo.getMovieName() + " doesn't exit");
+
         }
 
         // check for movie's capacity
         if (movie.getAvailableSeats() == 0) {
-            return "The capacity of " + reservationInfo.getMovieName() + " has been completed";
+            throw new IllegalArgumentException("No available seat for " + movie.getTitle());
         }
 
         int seatNumber = movie.getCapacity() - movie.getAvailableSeats() + 1;
@@ -98,7 +96,7 @@ public class UserService {
 
         reservationDAO.save(reservation);
 
-        return "Your reservationInfo for " + reservationInfo.getMovieName() + " was successfully";
+        return "Your reservation was successful";
     }
 
 
