@@ -1,5 +1,7 @@
 package movieReservationSystem.service;
 
+import movieReservationSystem.dto.ReservationDTO;
+import movieReservationSystem.model.Movie;
 import movieReservationSystem.model.UserInformation;
 import movieReservationSystem.repository.MovieDAO;
 import movieReservationSystem.repository.ReservationDAO;
@@ -69,10 +71,45 @@ public class UserServiceTest {
             assertEquals("User already exists", e.getMessage());
         }
 
-//        // Test for adding successfully
+        // Test for adding successfully
         when(userDAO.findByUserName("melinaSharafi")).thenReturn(null);
         String result = userService.addNewUser("melinaSharafi", "melinasharafimiab@gmail.com");
         assertEquals("User added successfully", result);
+    }
+
+
+    @Test
+    public void reserveMovieTest() {
+
+        ReservationDTO reservingMovie = new ReservationDTO();
+        reservingMovie.setMovieName("Inception");
+
+
+        // Test for not existing movie
+        when(movieDAO.findByTitle(reservingMovie.getMovieName())).thenReturn(null);
+        when(userDAO.findById(1)).thenReturn(new UserInformation());
+        try {
+            userService.reserveMovie(1, reservingMovie);
+        } catch (IllegalArgumentException e) {
+            assertEquals(reservingMovie.getMovieName() + " doesn't exit", e.getMessage());
+        }
+
+
+        // Test for no available seat
+        Movie movie = new Movie();
+        when(movieDAO.findByTitle(reservingMovie.getMovieName())).thenReturn(movie);
+        movie.setAvailableSeats(0);
+        try {
+            userService.reserveMovie(1, reservingMovie);
+        } catch (IllegalArgumentException e) {
+            assertEquals("No available seat for " + movie.getTitle(), e.getMessage());
+        }
+
+
+        // Test for successful approach
+        when(movieDAO.findByTitle(reservingMovie.getMovieName())).thenReturn(movie);
+        movie.setAvailableSeats(4);
+        assertEquals("Your reservation was successful", userService.reserveMovie(1, reservingMovie));
     }
 
 }
