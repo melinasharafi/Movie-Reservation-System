@@ -1,5 +1,6 @@
 package movieReservationSystem.service;
 
+import jakarta.persistence.PostUpdate;
 import movieReservationSystem.dto.ReservationDTO;
 import movieReservationSystem.model.Movie;
 import movieReservationSystem.model.Reservation;
@@ -10,7 +11,9 @@ import movieReservationSystem.repository.UserInformationDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PutMapping;
 
+import java.security.cert.PolicyNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,10 +33,46 @@ public class UserService {
         this.reservationDAO = reservationDAO;
     }
 
+
+    // To verify that a string contains more than three non-digit characters
+    public boolean validUserName(String userName) {
+
+        int nonDigitChar = 0;
+
+        for (char c : userName.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                nonDigitChar++;
+            }
+        }
+
+        return nonDigitChar >= 3;
+    }
+
     // add new user
-    public void addNewUser(String username, String email) {
-        UserInformation user = new UserInformation(username, email);
-        userDao.save(user);
+    public String addNewUser(String username, String email) {
+
+        if (username == null) {
+            throw new IllegalArgumentException("Enter username");
+        } else if (username.length() <= 3) {
+            throw new IllegalArgumentException("Username must contain at least 3 characters");
+        } else if (Character.isDigit(username.charAt(0))) {
+            throw new IllegalArgumentException("Username must start with character");
+        } else if (!validUserName(username)) {
+            throw new IllegalArgumentException("Username must contain at least 3 characters");
+        } else if (email != null && (!email.contains("@gmail.com") && !email.contains("@yahoo.com"))) {
+            throw new IllegalArgumentException("Invalid email address");
+        } else {
+
+            UserInformation user = new UserInformation(username, email);
+
+            if (userDao.findByUserName(username) != null) {
+                throw new IllegalArgumentException("User already exists");
+            }
+
+            userDao.save(user);
+            return "User added successfully";
+        }
+
     }
 
     // reserve new movie
