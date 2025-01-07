@@ -132,9 +132,13 @@ public class UserService {
     @Transactional
     public List<Movie> userReservations(int userId) {
 
+        List<Reservation> reservations = reservationDAO.findAllByUserId(userId);
+        if (reservations.isEmpty()) {
+            throw new NoSuchElementException("No reservations found");
+        }
+
         List<Movie> movies = new ArrayList<>();
 
-        List<Reservation> reservations = reservationDAO.findAllByUserId(userId);
 
         if (reservations != null && !reservations.isEmpty()) {
             for (Reservation reservation : reservations) {
