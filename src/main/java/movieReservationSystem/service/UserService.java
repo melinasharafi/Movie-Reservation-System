@@ -105,28 +105,28 @@ public class UserService {
 
         UserInformation user = userDao.findById(userId);
         if (user == null) {
-            return "No user found by id = " + userId;
+            throw new NoSuchElementException("No such user found");
         }
 
         Movie movie = movieDAO.findByTitle(reservation.getMovieName());
         if (movie == null) {
-            return reservation.getMovieName() + " not found";
+            throw new NoSuchElementException("No such movie found");
         }
 
         Reservation reservationToCancel = reservationDAO.findByUserIdAndMovieId(user.getId(), movie.getId());
         if (reservationToCancel == null) {
-            return "No reservation for " + movie.getTitle() + " by " + user.getUsername();
+            throw new NoSuchElementException("No such reservation found");
         }
 
         reservationDAO.delete(reservationToCancel);
 
-        // increase movie capacity by 1
+        // Increase movie capacity by 1
         movie.setAvailableSeats(movie.getAvailableSeats() + 1);
         movieDAO.save(movie);
 
         return "Reservation deleted successfully";
-
     }
+
 
     // user can see their reservation
     @Transactional
@@ -145,4 +145,6 @@ public class UserService {
 
         return movies;
     }
+
+
 }
