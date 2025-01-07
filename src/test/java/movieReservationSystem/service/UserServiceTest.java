@@ -2,6 +2,7 @@ package movieReservationSystem.service;
 
 import movieReservationSystem.dto.ReservationDTO;
 import movieReservationSystem.model.Movie;
+import movieReservationSystem.model.Reservation;
 import movieReservationSystem.model.UserInformation;
 import movieReservationSystem.repository.MovieDAO;
 import movieReservationSystem.repository.ReservationDAO;
@@ -21,6 +22,7 @@ public class UserServiceTest {
     private UserInformationDAO userDAO;
     private MovieDAO movieDAO;
     private ReservationDAO reservationDAO;
+    private ReservationDTO movie;
 
     @BeforeEach
     public void setUp() {
@@ -29,6 +31,9 @@ public class UserServiceTest {
         reservationDAO = mock(ReservationDAO.class);
 
         userService = new UserService(userDAO, movieDAO, reservationDAO);
+
+        movie = new ReservationDTO();
+        movie.setMovieName("Inception");
     }
 
     @Test
@@ -83,36 +88,76 @@ public class UserServiceTest {
     @Test
     public void reserveMovieTest() {
 
-        ReservationDTO reservingMovie = new ReservationDTO();
-        reservingMovie.setMovieName("Inception");
-
 
         // Test for not existing movie
-        when(movieDAO.findByTitle(reservingMovie.getMovieName())).thenReturn(null);
+        when(movieDAO.findByTitle(movie.getMovieName())).thenReturn(null);
         when(userDAO.findById(1)).thenReturn(new UserInformation());
         try {
-            userService.reserveMovie(1, reservingMovie);
+            userService.reserveMovie(1, movie);
         } catch (NoSuchElementException e) {
-            assertEquals(reservingMovie.getMovieName() + " doesn't exit", e.getMessage());
+            assertEquals(movie.getMovieName() + " doesn't exit", e.getMessage());
         }
 
 
         // Test for no available seat
         Movie movie = new Movie();
-        when(movieDAO.findByTitle(reservingMovie.getMovieName())).thenReturn(movie);
+        when(movieDAO.findByTitle(this.movie.getMovieName())).thenReturn(movie);
         movie.setAvailableSeats(0);
         try {
-            userService.reserveMovie(1, reservingMovie);
+            userService.reserveMovie(1, this.movie);
         } catch (IllegalArgumentException e) {
             assertEquals("No available seat for " + movie.getTitle(), e.getMessage());
         }
 
 
         // Test for successful approach
-        when(movieDAO.findByTitle(reservingMovie.getMovieName())).thenReturn(movie);
+        when(movieDAO.findByTitle(this.movie.getMovieName())).thenReturn(movie);
         movie.setCapacity(20);
         movie.setAvailableSeats(4);
-        assertEquals("Your reservation was successful", userService.reserveMovie(1, reservingMovie));
+        assertEquals("Your reservation was successful", userService.reserveMovie(1, this.movie));
+    }
+
+    @Test
+    public void cancelReservationTest() {
+
+        // Test for not existing user
+        when(userDAO.findById(2)).thenReturn(null);
+        try {
+            userService.cancelReservation(2, movie);
+        } catch (NoSuchElementException e) {
+            assertEquals("No such user found", e.getMessage());
+        }
+
+        // Test for not existing movie
+        when(movieDAO.findByTitle(movie.getMovieName())).thenReturn(null);
+        when(userDAO.findById(2)).thenReturn(new UserInformation());
+        try {
+            userService.cancelReservation(2, movie);
+        } catch (NoSuchElementException e) {
+            assertEquals("No such movie found", e.getMessage());
+        }
+
+
+        // Test for not existing reservation
+        when(userDAO.findById(2)).thenReturn(new UserInformation());
+        when(movieDAO.findByTitle(movie.getMovieName())).thenReturn(new Movie());
+        when(reservationDAO.findByUserIdAndMovieId(2, 2)).thenReturn(null);
+        try {
+            userService.cancelReservation(2, movie);
+        } catch (NoSuchElementException e) {
+            assertEquals("No such reservation found", e.getMessage());
+        }
+
+
+        // Test for successful approach
+        Movie existingMovie = movieDAO.findByTitle(movie.getMovieName());
+        existingMovie.setAvailableSeats(100);
+        UserInformation user = new UserInformation();
+        Reservation reservation = new Reservation();
+        reservation.setUser(user);
+        reservation.setMovie(existingMovie);
+        when(reservationDAO.findByUserIdAndMovieId(user.getId(), existingMovie.getId())).thenReturn(reservation);
+        assertEquals("Reservation deleted successfully", userService.cancelReservation(2, movie));
     }
 
 }
