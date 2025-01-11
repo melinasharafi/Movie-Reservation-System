@@ -1,6 +1,5 @@
 package movieReservationSystem.service;
 
-import jakarta.persistence.PostUpdate;
 import movieReservationSystem.dto.ReservationDTO;
 import movieReservationSystem.model.Movie;
 import movieReservationSystem.model.Reservation;
@@ -11,9 +10,7 @@ import movieReservationSystem.repository.UserInformationDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PutMapping;
 
-import java.security.cert.PolicyNode;
 import java.util.*;
 
 @Service
@@ -62,7 +59,7 @@ public class UserService {
 
             UserInformation user = new UserInformation(username, email);
 
-            if (userDao.findByUserName(username) != null) {
+            if (userDao.findByUsername(username) != null) {
                 throw new IllegalArgumentException("User already exists");
             }
 

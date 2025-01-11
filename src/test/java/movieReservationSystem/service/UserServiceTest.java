@@ -81,7 +81,7 @@ public class UserServiceTest {
         }
 
         // Test for adding duplicated user
-        when(userDAO.findByUserName("melinaSharafi")).thenReturn(new UserInformation());
+        when(userDAO.findByUsername("melinaSharafi")).thenReturn(new UserInformation());
         try {
             userService.addNewUser("melinaSharafi", "melinasharafi@gmail.com");
             fail("Expected IllegalArgumentException to be thrown");
@@ -90,7 +90,7 @@ public class UserServiceTest {
         }
 
         // Test for adding successfully
-        when(userDAO.findByUserName("melinaSharafi")).thenReturn(null);
+        when(userDAO.findByUsername("melinaSharafi")).thenReturn(null);
         String result = userService.addNewUser("melinaSharafi", "melinasharafimiab@gmail.com");
         assertEquals("User added successfully", result);
     }
