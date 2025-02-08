@@ -1,15 +1,14 @@
 package movieReservationSystem.Controller;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.mockito.Mockito.when;
 
-import jakarta.servlet.ServletException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import movieReservationSystem.controller.AdminController;
+import movieReservationSystem.dto.UserDTO;
 import movieReservationSystem.model.Movie;
 import movieReservationSystem.service.AdminService;
 import org.junit.jupiter.api.Test;
@@ -17,16 +16,20 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@WebMvcTest(AdminController.class) // Ensure this is your controller's class name
+@WebMvcTest(AdminController.class)
+@Import(movieReservationSystem.config.SecurityConfig.class)
 public class AdminControllerTest {
 
     @Autowired
@@ -38,6 +41,9 @@ public class AdminControllerTest {
     private AdminService adminService;
     @MockBean
     private BCryptPasswordEncoder encoder;
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
@@ -61,7 +67,6 @@ public class AdminControllerTest {
     }
 
 
-
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void listOfAllMoviesTest() throws Exception {
@@ -74,7 +79,6 @@ public class AdminControllerTest {
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)) // Check content type
                 .andExpect(jsonPath("$.message", is("Error retrieving movies: No movie found")));
-
 
 
         List<Movie> movies = new ArrayList<>();
@@ -104,9 +108,32 @@ public class AdminControllerTest {
     }
 
 
+    @Test
+    public void registerTest() throws Exception {
+
+        UserDTO admin = new UserDTO("melina", "Mm@1234567", "melinaSharafi@gmail.com");
+
+        when(userDetailsManager.userExists(admin.getUserName())).thenReturn(true);
+        mvc.perform(MockMvcRequestBuilders.post("/admin/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(admin)))
+                .andExpect(MockMvcResultMatchers.status().isConflict())
+                .andExpect(MockMvcResultMatchers.content().string("" +
+                        "{\"message\": \"melina already exists\"}"));
 
 
+        when(userDetailsManager.userExists(admin.getUserName())).thenReturn(false);
+        Mockito.when(encoder.encode(admin.getPassword())).thenReturn("hashedPassword");
+        mvc.perform(MockMvcRequestBuilders.post("/admin/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(admin)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("melina successfully registered"));
 
+
+    }
 
 
 }
+
+
