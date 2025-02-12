@@ -78,10 +78,17 @@ public class AdminController {
 
 
     @PutMapping("/movie/{movieId}")
-    public String updateMovie(@PathVariable int movieId, @RequestBody MovieDTO updatedMovie) {
+    public ResponseEntity<String> updateMovie(@PathVariable int movieId, @RequestBody(required = false) MovieDTO updatedMovie) {
 
-        return adminService.editMovie(movieId, updatedMovie);
+        try {
+            return ResponseEntity.ok(adminService.editMovie(movieId, updatedMovie));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("{\"message\": \"" + e.getMessage() + "\"}");
+        }
     }
+
 
     @DeleteMapping("/movie/{movieId}")
     public String deleteMovie(@PathVariable int movieId) {

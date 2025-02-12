@@ -73,7 +73,7 @@ public class AdminService {
     public String editMovie(int id, MovieDTO updatedMovie) {
 
         if (id <= 0) {
-            throw new IllegalArgumentException("Id must be greater than 1");
+            throw new IllegalArgumentException("ID must be positive integer");
         }
 
         if (updatedMovie == null) {
@@ -114,7 +114,6 @@ public class AdminService {
         movieDAO.save(existingMovie);
 
         return existingMovie.getTitle() + " updated successfully";
-
 
     }
 

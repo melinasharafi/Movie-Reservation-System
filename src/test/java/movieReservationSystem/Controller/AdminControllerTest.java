@@ -163,6 +163,52 @@ public class AdminControllerTest {
 
     }
 
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    public void updateMovieTest() throws Exception {
+
+        MovieDTO movie = new MovieDTO("title", "description", Timestamp.valueOf("2025-02-10 18:30:00"),
+                "genre", 100, 20);
+
+        // test for ID = 0
+        Mockito.when(adminService.editMovie(Mockito.eq(0), Mockito.any(MovieDTO.class)))
+                .thenThrow(new IllegalArgumentException("ID must be positive integer"));
+        mvc.perform(MockMvcRequestBuilders.put("/admin/movie/" + 0)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(movie)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().json("{\"message\": \"ID must be positive integer\"}"));
+
+
+        // test for negative id
+        Mockito.when(adminService.editMovie(Mockito.eq(-1), Mockito.any(MovieDTO.class)))
+                .thenThrow(new IllegalArgumentException("ID must be positive integer"));
+        mvc.perform(MockMvcRequestBuilders.put("/admin/movie/" + -1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(movie)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().json("{\"message\": \"ID must be positive integer\"}"));
+
+        // Test for passing null movie
+        Mockito.when(adminService.editMovie(Mockito.eq(4), Mockito.isNull()))
+                .thenThrow(new IllegalArgumentException("Updating movie can't be null"));
+        mvc.perform(MockMvcRequestBuilders.put("/admin/movie/" + 4)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("")) // Explicitly setting content to null
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().json("{\"message\": \"Updating movie can't be null\"}"));
+
+
+        // test for successful updating
+        Mockito.when(adminService.editMovie(Mockito.eq(4), Mockito.any(MovieDTO.class)))
+                .thenReturn(movie.getTitle() + " updated successfully");
+        mvc.perform(MockMvcRequestBuilders.put("/admin/movie/" + 4)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(movie))) // Explicitly setting content to null
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string(movie.getTitle() + " updated successfully"));
+    }
 }
 
 
