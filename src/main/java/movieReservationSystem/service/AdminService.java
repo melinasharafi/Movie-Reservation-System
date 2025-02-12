@@ -1,5 +1,6 @@
 package movieReservationSystem.service;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import movieReservationSystem.dto.MovieDTO;
 import movieReservationSystem.model.Movie;
@@ -56,7 +57,7 @@ public class AdminService {
         MovieValidator.validate(newMovie);
 
         if (movieDAO.findByTitle(newMovie.getTitle()) != null) {
-            return newMovie.getTitle() + " already exists";
+            throw new EntityExistsException(newMovie.getTitle() + " already exists.");
         }
 
         Movie movie = new Movie(newMovie.getTitle(), newMovie.getDescription(), newMovie.getShowTime(),

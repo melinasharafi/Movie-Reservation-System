@@ -1,5 +1,6 @@
 package movieReservationSystem.controller;
 
+import jakarta.persistence.EntityExistsException;
 import movieReservationSystem.dto.UserDTO;
 import movieReservationSystem.dto.MovieDTO;
 import movieReservationSystem.model.Movie;
@@ -65,10 +66,16 @@ public class AdminController {
     }
 
     @PostMapping("/movie")
-    public String addNewMovie(@RequestBody MovieDTO newMovie) {
-
-        return adminService.addNewMovie(newMovie);
+    public ResponseEntity<String> addNewMovie(@RequestBody MovieDTO newMovie) {
+        try {
+            return ResponseEntity.ok(adminService.addNewMovie(newMovie));
+        } catch (EntityExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("{\"message\": \"" + e.getMessage() + "\"}");
+        }
     }
+
 
     @PutMapping("/movie/{movieId}")
     public String updateMovie(@PathVariable int movieId, @RequestBody MovieDTO updatedMovie) {
