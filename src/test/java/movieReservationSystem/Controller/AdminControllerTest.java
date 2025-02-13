@@ -209,6 +209,46 @@ public class AdminControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(movie.getTitle() + " updated successfully"));
     }
+
+
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    public void deleteMovieTest() throws Exception {
+
+        // Mocking for ID = 0
+        Mockito.doThrow(new IllegalArgumentException("ID must be positive integer"))
+                .when(adminService).deleteMovie(0);
+        mvc.perform(MockMvcRequestBuilders.delete("/admin/movie/0"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().string("{\"message\": \"ID must be positive integer\"}"));
+
+
+        // Mocking for negative ID (-1)
+        Mockito.doThrow(new IllegalArgumentException("ID must be positive integer"))
+                .when(adminService).deleteMovie(-1);
+        mvc.perform(MockMvcRequestBuilders.delete("/admin/movie/-1"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().string("{\"message\": \"ID must be positive integer\"}"));
+
+
+        // Mocking for not existing movie (2)
+        Mockito.doThrow(new IllegalArgumentException("Movie not found"))
+                .when(adminService).deleteMovie(2);
+        mvc.perform(MockMvcRequestBuilders.delete("/admin/movie/2"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().string("{\"message\": \"Movie not found\"}"));
+
+        // Mocking for successful (2)
+        Mockito.doReturn("testMovie deleted successfully")
+                .when(adminService).deleteMovie(2);
+        mvc.perform(MockMvcRequestBuilders.delete("/admin/movie/2"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("testMovie deleted successfully"));
+    }
+
+
+
 }
 
 

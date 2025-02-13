@@ -122,7 +122,7 @@ public class AdminService {
     public String deleteMovie(int id) {
 
         if (id <= 0) {
-            throw new IllegalArgumentException("Id must be greater than 1");
+            throw new IllegalArgumentException("ID must be positive integer");
         } else if (movieDAO.findById(id) == null) {
             throw new IllegalArgumentException("Movie not found");
 

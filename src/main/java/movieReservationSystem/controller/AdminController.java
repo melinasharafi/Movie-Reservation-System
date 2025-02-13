@@ -91,9 +91,16 @@ public class AdminController {
 
 
     @DeleteMapping("/movie/{movieId}")
-    public String deleteMovie(@PathVariable int movieId) {
+    public ResponseEntity<String> deleteMovie(@PathVariable int movieId) {
 
-        return adminService.deleteMovie(movieId);
+        try {
+            return ResponseEntity.ok(adminService.deleteMovie(movieId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("{\"message\": \"" + e.getMessage() + "\"}");
+        }
+
     }
 
     @GetMapping("/movie")
