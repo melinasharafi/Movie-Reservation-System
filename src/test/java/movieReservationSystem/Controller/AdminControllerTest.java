@@ -6,12 +6,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityExistsException;
 import movieReservationSystem.controller.AdminController;
 import movieReservationSystem.dto.MovieDTO;
-import movieReservationSystem.dto.UserDTO;
+import movieReservationSystem.dto.request.UserRequestDTO;
 import movieReservationSystem.model.Movie;
 import movieReservationSystem.service.AdminService;
 import org.junit.jupiter.api.Test;
@@ -115,7 +114,7 @@ public class AdminControllerTest {
     @Test
     public void registerTest() throws Exception {
 
-        UserDTO admin = new UserDTO("melina", "Mm@1234567", "melinaSharafi@gmail.com");
+        UserRequestDTO admin = new UserRequestDTO("melina", "Mm@1234567", "melinaSharafi@gmail.com");
 
         when(userDetailsManager.userExists(admin.getUserName())).thenReturn(true);
         mvc.perform(MockMvcRequestBuilders.post("/admin/register")

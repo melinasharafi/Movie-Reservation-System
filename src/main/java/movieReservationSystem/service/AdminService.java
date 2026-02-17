@@ -1,39 +1,56 @@
 package movieReservationSystem.service;
 
 import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
+
+
+import lombok.RequiredArgsConstructor;
 import movieReservationSystem.dto.MovieDTO;
+import movieReservationSystem.dto.request.UserRequestDTO;
+import movieReservationSystem.dto.response.UserRegistrationResponseDTO;
 import movieReservationSystem.model.Movie;
-import movieReservationSystem.model.UserInformation;
 import movieReservationSystem.repository.MovieDAO;
-import movieReservationSystem.repository.UserInformationDAO;
-import org.springframework.beans.factory.annotation.Autowired;
+import movieReservationSystem.repository.UserInformationRepository;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
+
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
+@RequiredArgsConstructor
 public class AdminService {
 
-    private UserInformationDAO adminDao;
-    private MovieDAO movieDAO;
-
-
-    @Autowired
-    public AdminService(UserInformationDAO adminDao, MovieDAO movieDAO) {
-        this.adminDao = adminDao;
-        this.movieDAO = movieDAO;
-    }
-
-    public AdminService() {
-    }
+    private final UserInformationRepository adminRepository;
+    private final MovieDAO movieDAO;
+    private final JdbcUserDetailsManager userDetailsManager;
+    private final BCryptPasswordEncoder encoder;
 
     // create new admin
-    public void addNewAdmin(String username, String email) {
-        UserInformation admin = new UserInformation(username, email);
-        adminDao.save(admin);
+    public UserRegistrationResponseDTO addNewAdmin(UserRequestDTO adminDTO) {
+
+        if (userDetailsManager.userExists(adminDTO.getUserName())) {
+            throw new RuntimeException(adminDTO.getUserName() + " already exists");
+
+        }
+
+        UserDetails newAdmin = User.builder()
+                .username(adminDTO.getUserName())
+                .password(encoder.encode(adminDTO.getPassword()))
+                .roles("ADMIN")
+                .build();
+
+        userDetailsManager.createUser(newAdmin);
+
+        return UserRegistrationResponseDTO.builder()
+                .username(adminDTO.getUserName())
+                .email(adminDTO.getEmail())
+                .message(adminDTO.getUserName() + " registered successfully")
+                .build();
+
     }
 
 

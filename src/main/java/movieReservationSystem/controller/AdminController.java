@@ -1,14 +1,19 @@
 package movieReservationSystem.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityExistsException;
-import movieReservationSystem.dto.UserDTO;
+import lombok.RequiredArgsConstructor;
+import movieReservationSystem.dto.request.UserRequestDTO;
 import movieReservationSystem.dto.MovieDTO;
+import movieReservationSystem.dto.response.UserRegistrationResponseDTO;
 import movieReservationSystem.model.Movie;
 import movieReservationSystem.service.AdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +24,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
+@Tag(name = "Admin API")
+@RequiredArgsConstructor
 public class AdminController {
 
     private final JdbcUserDetailsManager userDetailsManager;
@@ -33,37 +38,21 @@ public class AdminController {
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
 
-    @Autowired
-    public AdminController(JdbcUserDetailsManager userDetailsManager, AdminService adminService,
-                           BCryptPasswordEncoder encoder) {
-        this.userDetailsManager = userDetailsManager;
-        this.adminService = adminService;
-        this.encoder = encoder;
-    }
-
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserDTO adminDTO) {
+    @Operation(summary = "Register new admin")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+            @ApiResponse(responseCode = "409", description = "Admin Already exists")
+    })
+    public ResponseEntity<?> register(@RequestBody UserRequestDTO adminDTO) {
 
-        if (userDetailsManager.userExists(adminDTO.getUserName())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body("{\"message\": \"" + adminDTO.getUserName() + " already exists\"}");
+        try {
+            return ResponseEntity.ok(adminService.addNewAdmin(adminDTO));
+        } catch (RuntimeException exception) {
+            return ResponseEntity.status(409).body(exception.getMessage());
         }
-
-        UserDetails newAdmin = User.builder()
-                .username(adminDTO.getUserName())
-                .password(encoder.encode(adminDTO.getPassword()))
-                .roles("ADMIN")
-                .build();
-
-        userDetailsManager.createUser(newAdmin);
-
-        SecurityContextHolder.getContext().setAuthentication(null);
-        adminService.addNewAdmin(adminDTO.getUserName(), adminDTO.getEmail());
-
-        return ResponseEntity.ok(adminDTO.getUserName() + " successfully registered");
-
     }
+
 
     @PostMapping("/movie")
     public ResponseEntity<String> addNewMovie(@RequestBody MovieDTO newMovie) {

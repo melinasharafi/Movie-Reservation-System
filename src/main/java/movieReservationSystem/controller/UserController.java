@@ -1,14 +1,11 @@
 package movieReservationSystem.controller;
 
 import movieReservationSystem.dto.ReservationDTO;
-import movieReservationSystem.dto.UserDTO;
+import movieReservationSystem.dto.request.UserRequestDTO;
 import movieReservationSystem.model.Movie;
-import movieReservationSystem.model.Reservation;
 import movieReservationSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,24 +32,24 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public String register(@RequestBody UserDTO userDTO) {
+    public String register(@RequestBody UserRequestDTO userRequestDTO) {
 
-        if (userDetailsManager.userExists(userDTO.getUserName())) {
-            return userDTO.getUserName() + " already exist";
+        if (userDetailsManager.userExists(userRequestDTO.getUserName())) {
+            return userRequestDTO.getUserName() + " already exist";
         }
 
         UserDetails newUser = User.builder()
-                .username(userDTO.getUserName())
-                .password(encoder.encode(userDTO.getPassword()))
+                .username(userRequestDTO.getUserName())
+                .password(encoder.encode(userRequestDTO.getPassword()))
                 .roles("USER")
                 .build();
 
         userDetailsManager.createUser(newUser);
 
         SecurityContextHolder.getContext().setAuthentication(null);
-        userService.addNewUser(userDTO.getUserName(), userDTO.getEmail());
+        userService.addNewUser(userRequestDTO.getUserName(), userRequestDTO.getEmail());
 
-        return userDTO.getUserName() + " successfully registered";
+        return userRequestDTO.getUserName() + " successfully registered";
     }
 
     @PostMapping("/{userId}/reserve")
