@@ -6,7 +6,7 @@ import movieReservationSystem.model.Reservation;
 import movieReservationSystem.model.UserInformation;
 import movieReservationSystem.repository.MovieDAO;
 import movieReservationSystem.repository.ReservationDAO;
-import movieReservationSystem.repository.UserInformationDAO;
+import movieReservationSystem.repository.UserInformationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 public class UserServiceTest {
 
     private UserService userService;
-    private UserInformationDAO userDAO;
+    private UserInformationRepository userDAO;
     private MovieDAO movieDAO;
     private ReservationDAO reservationDAO;
     private ReservationDTO movie;
@@ -32,7 +32,7 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
         movieDAO = mock(MovieDAO.class);
-        userDAO = mock(UserInformationDAO.class);
+        userDAO = mock(UserInformationRepository.class);
         reservationDAO = mock(ReservationDAO.class);
 
         userService = new UserService(userDAO, movieDAO, reservationDAO);

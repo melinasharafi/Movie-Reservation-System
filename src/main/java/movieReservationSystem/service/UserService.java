@@ -6,7 +6,7 @@ import movieReservationSystem.model.Reservation;
 import movieReservationSystem.model.UserInformation;
 import movieReservationSystem.repository.MovieDAO;
 import movieReservationSystem.repository.ReservationDAO;
-import movieReservationSystem.repository.UserInformationDAO;
+import movieReservationSystem.repository.UserInformationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +16,12 @@ import java.util.*;
 @Service
 public class UserService {
 
-    private UserInformationDAO userDao;
+    private UserInformationRepository userDao;
     private MovieDAO movieDAO;
     private ReservationDAO reservationDAO;
 
     @Autowired
-    public UserService(UserInformationDAO userDao, MovieDAO movieDAO, ReservationDAO reservationDAO) {
+    public UserService(UserInformationRepository userDao, MovieDAO movieDAO, ReservationDAO reservationDAO) {
         this.userDao = userDao;
         this.movieDAO = movieDAO;
         this.reservationDAO = reservationDAO;

@@ -3,7 +3,7 @@ package movieReservationSystem.service;
 import movieReservationSystem.dto.MovieDTO;
 import movieReservationSystem.model.Movie;
 import movieReservationSystem.repository.MovieDAO;
-import movieReservationSystem.repository.UserInformationDAO;
+import movieReservationSystem.repository.UserInformationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 public class AdminServiceTest {
 
     private AdminService adminService;
-    private UserInformationDAO adminDao;
+    private UserInformationRepository adminDao;
     private MovieDAO movieDAO;
     private MovieDTO firstMovieDTO;
     private MovieDTO secondMovieDTO;
@@ -30,7 +30,7 @@ public class AdminServiceTest {
 
         // Mock the DAO
         movieDAO = mock(MovieDAO.class);
-        adminDao = mock(UserInformationDAO.class);
+        adminDao = mock(UserInformationRepository.class);
 
         // Inject the mock into AdminService
         adminService = new AdminService(adminDao, movieDAO);
