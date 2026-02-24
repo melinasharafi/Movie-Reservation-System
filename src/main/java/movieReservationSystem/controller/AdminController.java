@@ -54,16 +54,23 @@ public class AdminController {
     }
 
 
-    @PostMapping("/movie")
-    public ResponseEntity<String> addNewMovie(@RequestBody MovieDTO newMovie) {
+    @PostMapping("/add-movie")
+    @Operation(summary = "Add new movie")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "New movie successfully added"),
+            @ApiResponse(responseCode = "409", description = "Movie already existed")
+    })
+    public ResponseEntity<?> addNewMovie(@RequestBody MovieDTO newMovie) {
         try {
-            return ResponseEntity.ok(adminService.addNewMovie(newMovie));
+            Movie savedMovie = adminService.addNewMovie(newMovie);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedMovie);
         } catch (EntityExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body("{\"message\": \"" + e.getMessage() + "\"}");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
+
+
+
 
 
     @PutMapping("/movie/{movieId}")

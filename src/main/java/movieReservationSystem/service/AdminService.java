@@ -69,20 +69,26 @@ public class AdminService {
         }
     }
 
-    // create new movie
-    public String addNewMovie(MovieDTO newMovie) {
+    // add new movie
+    public Movie addNewMovie(MovieDTO newMovie) {
         MovieValidator.validate(newMovie);
 
-        if (movieDAO.findByTitle(newMovie.getTitle()) != null) {
-            throw new EntityExistsException(newMovie.getTitle() + " already exists.");
+        if (movieDAO.existsByTitle(newMovie.getTitle())) {
+            throw new EntityExistsException("Movie: " + newMovie.getTitle() + " already exists.");
         }
 
-        Movie movie = new Movie(newMovie.getTitle(), newMovie.getDescription(), newMovie.getShowTime(),
-                newMovie.getGenre(), newMovie.getCapacity(), newMovie.getAvailableSeats());
+        Movie savedMovie = Movie.builder()
+                .title(newMovie.getTitle())
+                .genre(newMovie.getGenre())
+                .description(newMovie.getDescription())
+                .showTime(newMovie.getShowTime())
+                .capacity(newMovie.getCapacity())
+                .availableSeats(newMovie.getCapacity())
+                .build();
 
-        movieDAO.save(movie);
+        movieDAO.save(savedMovie);
 
-        return movie.getTitle() + " added successfully";
+        return savedMovie;
     }
 
 
